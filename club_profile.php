@@ -3,8 +3,13 @@ session_start();
 $title = "會籍資料 Club Profile";
 include_once($_SERVER['DOCUMENT_ROOT']."/common/header.php");
 
+$current_year = date('Y');
+$paid = false;
+
+
+
 try {
-    // Fetch club info
+ // Fetch club info
     $stmt = $pdo->prepare("SELECT * FROM club WHERE username = ?");
     $stmt->execute([$username]);
     $club = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -13,6 +18,22 @@ try {
         echo "<div class='alert alert-danger'>找不到您的會籍資料 Club information not found.</div>";
         include_once($_SERVER['DOCUMENT_ROOT']."/common/footer.php");
         exit;
+    }
+
+    // Set membership fee based on club type
+    $membership_fee = 10; // default
+    if ($club['type'] === 'renew_registered') {
+        $membership_fee = 800;
+    } elseif ($club['type'] === 'renew_observation') {
+        $membership_fee = 500;
+    }
+    
+    // Check if already paid for this year
+    $stmt = $pdo->prepare("SELECT * FROM club_payments WHERE club_id = ? AND year = ? AND paid = 1");
+    $stmt->execute([$club['Ref_id'], $current_year]);
+    $payment = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($payment) {
+        $paid = true;
     }
 
     // Handle update
@@ -41,21 +62,39 @@ try {
         $club = $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Prepare PayPal payment if not paid
+    if (!$paid) {
+        // Check if a pending payment exists for this year
+        $stmt = $pdo->prepare("SELECT * FROM club_payments WHERE club_id = ? AND year = ?");
+        $stmt->execute([$club['Ref_id'], $current_year]);
+        $pending_payment = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($pending_payment) {
+            $custom_id = $pending_payment['custom_id'];
+        } else {
+            // Generate a new custom_id and insert a pending payment
+            $custom_id = uniqid('club_' . $club['username'] . '_', true);
+            $stmt = $pdo->prepare("INSERT INTO club_payments (club_id, year, fee, paid, custom_id, created_at) VALUES (?, ?, ?, 0, ?, NOW())");
+            $stmt->execute([$club['Ref_id'], $current_year, $membership_fee, $custom_id]);
+        }
+    }
+
     ?>
     <div class="row row-block">
         <h3>會籍資料 Club Profile</h3>
         <form method="post">
+            <!-- ...existing form fields... -->
             <div class="form-group">
                 <label>英文名稱 Name:</label>
-                <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($club['name']); ?>" required>
+                <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($club['name']); ?>" required readonly>
             </div>
             <div class="form-group">
                 <label>中文名稱 Name (Chi):</label>
-                <input type="text" name="name_chi" class="form-control" value="<?php echo htmlspecialchars($club['name_chi']); ?>" required>
+                <input type="text" name="name_chi" class="form-control" value="<?php echo htmlspecialchars($club['name_chi']); ?>" required readonly>
             </div>
             <div class="form-group">
                 <label>類型 Type:</label>
-                <input type="text" name="type" class="form-control" value="<?php echo htmlspecialchars($club['type']); ?>">
+                <input type="text" name="type" class="form-control" value="<?php echo htmlspecialchars($club['type']); ?>" readonly>
             </div>
             <div class="form-group">
                 <label>會員號碼 Membership No.:</label>
@@ -123,6 +162,38 @@ try {
             </div>
             <button type="submit" name="update" class="btn btn-primary">更新資料 Update</button>
         </form>
+        <hr>
+        <h4>年度會費 Annual Membership Fee (<?php echo $current_year; ?>):</h4>
+        <?php if ($paid): ?>
+            <div class="alert alert-success">已繳付本年度會費 Membership fee for this year is PAID.</div>
+        <?php else: ?>
+            <div class="alert alert-warning">尚未繳付本年度會費 Membership fee for this year is NOT PAID.</div>
+            <div>
+                <strong>金額 Amount:</strong> HKD <?php echo $membership_fee; ?>
+            </div>
+            <!-- PayPal Button -->
+            <div id="paypal-button-container"></div>
+            <script src="<?php echo $paypal_webhook_url ?>"></script>
+            <script>
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: { value: '<?php echo $membership_fee; ?>' },
+                            custom_id: '<?php echo $custom_id; ?>',
+                            description: 'Club Membership Fee <?php echo $current_year; ?> (<?php echo htmlspecialchars($club['name']); ?>)'
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        alert('付款成功 Payment completed!');
+                        window.location.reload();
+                    });
+                }
+            }).render('#paypal-button-container');
+            </script>
+        <?php endif; ?>
     </div>
     <?php
 

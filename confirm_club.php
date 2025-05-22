@@ -6,39 +6,65 @@ include_once($_SERVER['DOCUMENT_ROOT']."/common/header_nologin.php");
 
 <?php
 
-function confirm(){
-	if(isset($_SESSION['id'])){
-		$id =  $_SESSION['id'];
-	}else{
-		$id = "";
-	}
-	if($_SESSION['type'] == "new")
-	{
-		$insert = 'INSERT INTO club (name_chi, 
-		name, br, br_date, address, phone, practice_place, practice_time,
-		coach_name, coach_dan, coach_id, coach2_name, coach2_dan, coach2_id,
-		rep_name,rep_id, rep_address, rep_phone, rep_email, type, date)';
-		$add = "'".$_SESSION['name_chi']."','".$_SESSION['name']."','".$_SESSION['br']."','".$_SESSION['br_date']."','".$_SESSION['address']."','".$_SESSION['phone']."','".$_SESSION['practice_place']."','".$_SESSION['practice_time']."','"
-		.$_SESSION['coach_name']."','".$_SESSION['coach_dan']."','".$_SESSION['coach_id']."','".$_SESSION['coach2_name']."','".$_SESSION['coach2_dan']."','".$_SESSION['coach2_id']."','"
-		.$_SESSION['rep_name']."','".$_SESSION['rep_id']."','".$_SESSION['rep_address']."','".$_SESSION['rep_phone']."','".$_SESSION['rep_email']."','".$_SESSION['type']."','".date("F j, Y, g:i a")."'";
-		$confirm = $insert."VALUES (".$add.")";
-		echo $confirm;
-		$confirm2 =  mysql_query($confirm) or die('Error! ' . mysql_error());
-		echo '<meta http-equiv=REFRESH CONTENT=1;url=club_done.php>';
-	}else{
-		$replace = 'REPLACE INTO club (id, username, password, category, name_chi, 
-		name, br, br_date, address, phone, practice_place, practice_time,
-		coach_name, coach_dan, coach_id, coach2_name, coach2_dan, coach2_id,
-		rep_name,rep_id, rep_address, rep_phone, rep_email, type, date)';
-		$edit = "'".$_SESSION['id']."','".$_SESSION['username']."','".$_SESSION['password']."','".$_SESSION['category']."','".$_SESSION['name_chi']."','".$_SESSION['name']."','".$_SESSION['br']."','".$_SESSION['br_date']."','".$_SESSION['address']."','".$_SESSION['phone']."','".$_SESSION['practice_place']."','".$_SESSION['practice_time']."','"
-		.$_SESSION['coach_name']."','".$_SESSION['coach_dan']."','".$_SESSION['coach_id']."','".$_SESSION['coach2_name']."','".$_SESSION['coach2_dan']."','".$_SESSION['coach2_id']."','"
-		.$_SESSION['rep_name']."','".$_SESSION['rep_id']."','".$_SESSION['rep_address']."','".$_SESSION['rep_phone']."','".$_SESSION['rep_email']."','".$_SESSION['type']."','".date("F j, Y, g:i a")."'";
-		$confirm = $replace."VALUES (".$edit.")";
-		echo $confirm;
-		$confirm2 =  mysql_query($confirm) or die('Error! ' . mysql_error());
-		echo '<meta http-equiv=REFRESH CONTENT=1;url=front.php>';
-	}
+
+function confirm() {
+    global $pdo;
+    
+    try {
+        if(isset($_SESSION['id'])) {
+            $id = $_SESSION['id'];
+        } else {
+            $id = "";
+        }
+
+        if($_SESSION['type'] == "new") {
+            $sql = 'INSERT INTO club (name_chi, name, br, br_date, address, phone, 
+                    practice_place, practice_time, coach_name, coach_dan, coach_id, 
+                    coach2_name, coach2_dan, coach2_id, rep_name, rep_id, 
+                    rep_address, rep_phone, rep_email, type, date) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                    
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                $_SESSION['name_chi'], $_SESSION['name'], $_SESSION['br'],
+                $_SESSION['br_date'], $_SESSION['address'], $_SESSION['phone'],
+                $_SESSION['practice_place'], $_SESSION['practice_time'],
+                $_SESSION['coach_name'], $_SESSION['coach_dan'], $_SESSION['coach_id'],
+                $_SESSION['coach2_name'], $_SESSION['coach2_dan'], $_SESSION['coach2_id'],
+                $_SESSION['rep_name'], $_SESSION['rep_id'], $_SESSION['rep_address'],
+                $_SESSION['rep_phone'], $_SESSION['rep_email'], $_SESSION['type'],
+                date("F j, Y, g:i a")
+            ]);
+            
+            echo '<meta http-equiv=REFRESH CONTENT=1;url=club_done.php>';
+        } else {
+            $sql = 'REPLACE INTO club (id, username, password, category, name_chi, 
+                    name, br, br_date, address, phone, practice_place, practice_time,
+                    coach_name, coach_dan, coach_id, coach2_name, coach2_dan, coach2_id,
+                    rep_name, rep_id, rep_address, rep_phone, rep_email, type, date) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                    
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                $_SESSION['id'], $_SESSION['username'], $_SESSION['password'],
+                $_SESSION['category'], $_SESSION['name_chi'], $_SESSION['name'],
+                $_SESSION['br'], $_SESSION['br_date'], $_SESSION['address'],
+                $_SESSION['phone'], $_SESSION['practice_place'], $_SESSION['practice_time'],
+                $_SESSION['coach_name'], $_SESSION['coach_dan'], $_SESSION['coach_id'],
+                $_SESSION['coach2_name'], $_SESSION['coach2_dan'], $_SESSION['coach2_id'],
+                $_SESSION['rep_name'], $_SESSION['rep_id'], $_SESSION['rep_address'],
+                $_SESSION['rep_phone'], $_SESSION['rep_email'], $_SESSION['type'],
+                date("F j, Y, g:i a")
+            ]);
+            
+            echo '<meta http-equiv=REFRESH CONTENT=1;url=front.php>';
+        }
+    } catch(PDOException $e) {
+        error_log("Database Error: " . $e->getMessage());
+        die('Error occurred while processing your request.');
+    }
 }
+
 
 ?>
 <div class = "row row-block">
@@ -95,24 +121,24 @@ function confirm(){
 </div>
 
 <?php 
-if(isset($_POST['submit']))
-{ 
+
+if(isset($_POST['submit'])) { 
     $to_email = 'nikki_hkjudo@yahoo.com';
     $subject = '新申請觀察團體會員 New Application for Observed Membership';
-    //$message = "新申請觀察團體會員: 團體名稱 (中文):".$_SESSION['name_chi'];
     $message = "新申請觀察團體會員: 團體名稱 (中文):";
-
     $headers = 'From: hkjudo_mail@yahoo.com.hk';
-    $retval= mail($to_email,$subject,$message,$headers);
     
-    if( $retval == true ) {
+    $retval = mail($to_email, $subject, $message, $headers);
+    
+    if($retval == true) {
         echo "Message sent successfully...";
-    }else {
+    } else {
         echo "Message could not be sent...";
     }
 
-   confirm(); 
+    confirm(); 
 } 
+
 ?>
 							
 <?php include_once($_SERVER['DOCUMENT_ROOT']."/common/footer.php"); ?> 

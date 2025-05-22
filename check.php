@@ -3,6 +3,11 @@ session_start();
 $title = "現有參加者 Current Participants";
 include_once($_SERVER['DOCUMENT_ROOT']."/common/header.php");
 
+$DEBUG=false;
+
+if ($DEBUG){
+    var_dump($item);
+}
 //funciton to change
 function change($ch, $id)
 {
@@ -57,10 +62,18 @@ try {
             email, phone, category, active_member 
             FROM participants_'.$_SESSION['category'].' 
             WHERE club = ? ORDER BY name';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$username]);
+    $participants = $pdo->prepare($sql);
+    $participants->execute([$username]);
 
+
+        if ($DEBUG){
+            echo "Debug:".$sql." ".$username;
+      
+    
+        }
 include_once($_SERVER['DOCUMENT_ROOT']."/common/count.php");
+
+
 ?>
 
 <div class = "row row-block timetable">
@@ -84,9 +97,23 @@ include_once($_SERVER['DOCUMENT_ROOT']."/common/count.php");
 			</div>
 		</div>
 	<?php
+	
+	
 	$count = 1;
-	 while ($part3 = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $p_id[$count] = $part3['id']; ?>
+	
+
+	 while ($part3 = $participants->fetch(PDO::FETCH_ASSOC)) {
+       if ($DEBUG){
+            echo "Debug:";
+
+    
+        }
+        $p_id[$count] = $part3['id']; 
+        
+     
+        
+        
+        ?>
 
 		<div class = "row">
 			<div class = "col-xs-12 col-md-6">

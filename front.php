@@ -2,14 +2,9 @@
 session_start();
 $title = "主頁 Home";
 include_once($_SERVER['DOCUMENT_ROOT']."/common/header.php");
-
+include_once($_SERVER['DOCUMENT_ROOT']."/common/count.php");
 
 try {
-    // First query
-    $query = "SELECT COUNT(*) FROM participants_" . $_SESSION['category'] . " WHERE club = ?";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([$username]);
-    $row = $stmt->fetch(PDO::FETCH_NUM);
 
   // Club query
     $clubquery = "SELECT name, name_chi, type, Ref_id FROM club WHERE username = ?";
@@ -37,8 +32,9 @@ try {
 
 <div class="row row-block">
     <h4>
-        <?php echo "已註冊會員:" . $row['COUNT(*)']; ?><br>
-        <?php echo "Current registered participants: " . $row['COUNT(*)']; ?><br><br>
+
+        
+        
         <?php echo "會員號碼 Membership No.: " . $clubrow['Ref_id']; ?><br><br>
         
         <?php echo '

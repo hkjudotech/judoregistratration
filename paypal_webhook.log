@@ -1,0 +1,418 @@
+2025-05-21T05:59:23+00:00 [DEBUG] Raw body: {"id":"WH-5X444558E1199110A-9H5080353N4082132","event_version":"1.0","create_time":"2025-05-21T05:34:40.681Z","resource_type":"checkout-order","resource_version":"2.0","event_type":"CHECKOUT.ORDER.APPROVED","summary":"An order has been approved by buyer","resource":{"update_time":"2025-05-21T05:34:39Z","create_time":"2025-05-21T05:33:08Z","purchase_units":[{"reference_id":"default","amount":{"currency_code":"HKD","value":"10.00"},"payee":{"email_address":"hkjudo-facilitator@outlook.com","merchant_id":"GK3V9UB6S8ZS2"},"description":"Club Membership Fee 2025 (abcjudo)","custom_id":"club_XX0001_682d65877585e3.12383880","soft_descriptor":"PAYPAL *TESTFACILIT","shipping":{"name":{"full_name":"fefwefw wefweww"},"address":{"address_line_1":"zc","admin_area_2":"zcz","admin_area_1":"KOWLOON","country_code":"HK"}},"payments":{"captures":[{"id":"210539030N255911F","status":"COMPLETED","amount":{"currency_code":"HKD","value":"10.00"},"final_capture":true,"seller_protection":{"status":"NOT_ELIGIBLE"},"seller_receivable_breakdown":{"gross_amount":{"currency_code":"HKD","value":"10.00"},"paypal_fee":{"currency_code":"HKD","value":"2.69"},"net_amount":{"currency_code":"HKD","value":"7.31"}},"custom_id":"club_XX0001_682d65877585e3.12383880","links":[{"href":"https://api.sandbox.paypal.com/v2/payments/captures/210539030N255911F","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v2/payments/captures/210539030N255911F/refund","rel":"refund","method":"POST"},{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/7S446289TE448234V","rel":"up","method":"GET"}],"create_time":"2025-05-21T05:34:39Z","update_time":"2025-05-21T05:34:39Z"}]}}],"links":[{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/7S446289TE448234V","rel":"self","method":"GET"}],"id":"7S446289TE448234V","payment_source":{"paypal":{"email_address":"234324234223z@asda.com","account_id":"V2MDFEA2UP6SC","account_status":"UNVERIFIED","name":{"given_name":"fefwefw","surname":"wefweww"},"address":{"country_code":"HK"}}},"intent":"CAPTURE","payer":{"name":{"given_name":"fefwefw","surname":"wefweww"},"email_address":"234324234223z@asda.com","payer_id":"V2MDFEA2UP6SC","address":{"country_code":"HK"}},"status":"COMPLETED"},"links":[{"href":"https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-5X444558E1199110A-9H5080353N4082132","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-5X444558E1199110A-9H5080353N4082132/resend","rel":"resend","method":"POST"}]}
+2025-05-21T05:59:23+00:00 [DEBUG] Decoded event: Array
+(
+    [id] => WH-5X444558E1199110A-9H5080353N4082132
+    [event_version] => 1.0
+    [create_time] => 2025-05-21T05:34:40.681Z
+    [resource_type] => checkout-order
+    [resource_version] => 2.0
+    [event_type] => CHECKOUT.ORDER.APPROVED
+    [summary] => An order has been approved by buyer
+    [resource] => Array
+        (
+            [update_time] => 2025-05-21T05:34:39Z
+            [create_time] => 2025-05-21T05:33:08Z
+            [purchase_units] => Array
+                (
+                    [0] => Array
+                        (
+                            [reference_id] => default
+                            [amount] => Array
+                                (
+                                    [currency_code] => HKD
+                                    [value] => 10.00
+                                )
+
+                            [payee] => Array
+                                (
+                                    [email_address] => hkjudo-facilitator@outlook.com
+                                    [merchant_id] => GK3V9UB6S8ZS2
+                                )
+
+                            [description] => Club Membership Fee 2025 (abcjudo)
+                            [custom_id] => club_XX0001_682d65877585e3.12383880
+                            [soft_descriptor] => PAYPAL *TESTFACILIT
+                            [shipping] => Array
+                                (
+                                    [name] => Array
+                                        (
+                                            [full_name] => fefwefw wefweww
+                                        )
+
+                                    [address] => Array
+                                        (
+                                            [address_line_1] => zc
+                                            [admin_area_2] => zcz
+                                            [admin_area_1] => KOWLOON
+                                            [country_code] => HK
+                                        )
+
+                                )
+
+                            [payments] => Array
+                                (
+                                    [captures] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [id] => 210539030N255911F
+                                                    [status] => COMPLETED
+                                                    [amount] => Array
+                                                        (
+                                                            [currency_code] => HKD
+                                                            [value] => 10.00
+                                                        )
+
+                                                    [final_capture] => 1
+                                                    [seller_protection] => Array
+                                                        (
+                                                            [status] => NOT_ELIGIBLE
+                                                        )
+
+                                                    [seller_receivable_breakdown] => Array
+                                                        (
+                                                            [gross_amount] => Array
+                                                                (
+                                                                    [currency_code] => HKD
+                                                                    [value] => 10.00
+                                                                )
+
+                                                            [paypal_fee] => Array
+                                                                (
+                                                                    [currency_code] => HKD
+                                                                    [value] => 2.69
+                                                                )
+
+                                                            [net_amount] => Array
+                                                                (
+                                                                    [currency_code] => HKD
+                                                                    [value] => 7.31
+                                                                )
+
+                                                        )
+
+                                                    [custom_id] => club_XX0001_682d65877585e3.12383880
+                                                    [links] => Array
+                                                        (
+                                                            [0] => Array
+                                                                (
+                                                                    [href] => https://api.sandbox.paypal.com/v2/payments/captures/210539030N255911F
+                                                                    [rel] => self
+                                                                    [method] => GET
+                                                                )
+
+                                                            [1] => Array
+                                                                (
+                                                                    [href] => https://api.sandbox.paypal.com/v2/payments/captures/210539030N255911F/refund
+                                                                    [rel] => refund
+                                                                    [method] => POST
+                                                                )
+
+                                                            [2] => Array
+                                                                (
+                                                                    [href] => https://api.sandbox.paypal.com/v2/checkout/orders/7S446289TE448234V
+                                                                    [rel] => up
+                                                                    [method] => GET
+                                                                )
+
+                                                        )
+
+                                                    [create_time] => 2025-05-21T05:34:39Z
+                                                    [update_time] => 2025-05-21T05:34:39Z
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+            [links] => Array
+                (
+                    [0] => Array
+                        (
+                            [href] => https://api.sandbox.paypal.com/v2/checkout/orders/7S446289TE448234V
+                            [rel] => self
+                            [method] => GET
+                        )
+
+                )
+
+            [id] => 7S446289TE448234V
+            [payment_source] => Array
+                (
+                    [paypal] => Array
+                        (
+                            [email_address] => 234324234223z@asda.com
+                            [account_id] => V2MDFEA2UP6SC
+                            [account_status] => UNVERIFIED
+                            [name] => Array
+                                (
+                                    [given_name] => fefwefw
+                                    [surname] => wefweww
+                                )
+
+                            [address] => Array
+                                (
+                                    [country_code] => HK
+                                )
+
+                        )
+
+                )
+
+            [intent] => CAPTURE
+            [payer] => Array
+                (
+                    [name] => Array
+                        (
+                            [given_name] => fefwefw
+                            [surname] => wefweww
+                        )
+
+                    [email_address] => 234324234223z@asda.com
+                    [payer_id] => V2MDFEA2UP6SC
+                    [address] => Array
+                        (
+                            [country_code] => HK
+                        )
+
+                )
+
+            [status] => COMPLETED
+        )
+
+    [links] => Array
+        (
+            [0] => Array
+                (
+                    [href] => https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-5X444558E1199110A-9H5080353N4082132
+                    [rel] => self
+                    [method] => GET
+                )
+
+            [1] => Array
+                (
+                    [href] => https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-5X444558E1199110A-9H5080353N4082132/resend
+                    [rel] => resend
+                    [method] => POST
+                )
+
+        )
+
+)
+
+2025-05-21T05:59:23+00:00 [DEBUG] PAYMENT.CAPTURE.COMPLETED event detected
+2025-05-21T05:59:23+00:00 [DEBUG] custom_id: ****, payer_email: 234324234223z@asda.com
+2025-05-21T05:59:23+00:00 [DEBUG] No custom_id found, skipping DB update.
+2025-05-21T06:39:10+00:00 [DEBUG] Raw body: {"id":"WH-2X025555WK649521W-6UB55136HR582793C","event_version":"1.0","create_time":"2025-05-21T06:05:18.901Z","resource_type":"checkout-order","resource_version":"2.0","event_type":"CHECKOUT.ORDER.APPROVED","summary":"An order has been approved by buyer","resource":{"update_time":"2025-05-21T06:05:18Z","create_time":"2025-05-21T06:03:43Z","purchase_units":[{"reference_id":"default","amount":{"currency_code":"HKD","value":"10.00"},"payee":{"email_address":"hkjudo-facilitator@outlook.com","merchant_id":"GK3V9UB6S8ZS2"},"description":"Club Membership Fee 2025 (abcjudo)","custom_id":"club_abcjudo_682d6c810bb7a9.26937549","soft_descriptor":"PAYPAL *TESTFACILIT","shipping":{"name":{"full_name":"asda asdadsada"},"address":{"address_line_1":"asda","admin_area_2":"asd","admin_area_1":"HONG KONG ISLAND","country_code":"HK"}},"payments":{"captures":[{"id":"2LW61782F9642482U","status":"COMPLETED","amount":{"currency_code":"HKD","value":"10.00"},"final_capture":true,"seller_protection":{"status":"NOT_ELIGIBLE"},"seller_receivable_breakdown":{"gross_amount":{"currency_code":"HKD","value":"10.00"},"paypal_fee":{"currency_code":"HKD","value":"2.69"},"net_amount":{"currency_code":"HKD","value":"7.31"}},"custom_id":"club_abcjudo_682d6c810bb7a9.26937549","links":[{"href":"https://api.sandbox.paypal.com/v2/payments/captures/2LW61782F9642482U","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v2/payments/captures/2LW61782F9642482U/refund","rel":"refund","method":"POST"},{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/8J894199MW656953P","rel":"up","method":"GET"}],"create_time":"2025-05-21T06:05:18Z","update_time":"2025-05-21T06:05:18Z"}]}}],"links":[{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/8J894199MW656953P","rel":"self","method":"GET"}],"id":"8J894199MW656953P","payment_source":{"paypal":{"email_address":"234324234223z@asda.com","account_id":"TJZ353TG3JBV2","account_status":"UNVERIFIED","name":{"given_name":"asda","surname":"asdadsada"},"address":{"country_code":"HK"}}},"intent":"CAPTURE","payer":{"name":{"given_name":"asda","surname":"asdadsada"},"email_address":"234324234223z@asda.com","payer_id":"TJZ353TG3JBV2","address":{"country_code":"HK"}},"status":"COMPLETED"},"links":[{"href":"https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-2X025555WK649521W-6UB55136HR582793C","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-2X025555WK649521W-6UB55136HR582793C/resend","rel":"resend","method":"POST"}]}
+2025-05-21T06:39:10+00:00 [DEBUG] Decoded event: Array
+(
+    [id] => WH-2X025555WK649521W-6UB55136HR582793C
+    [event_version] => 1.0
+    [create_time] => 2025-05-21T06:05:18.901Z
+    [resource_type] => checkout-order
+    [resource_version] => 2.0
+    [event_type] => CHECKOUT.ORDER.APPROVED
+    [summary] => An order has been approved by buyer
+    [resource] => Array
+        (
+            [update_time] => 2025-05-21T06:05:18Z
+            [create_time] => 2025-05-21T06:03:43Z
+            [purchase_units] => Array
+                (
+                    [0] => Array
+                        (
+                            [reference_id] => default
+                            [amount] => Array
+                                (
+                                    [currency_code] => HKD
+                                    [value] => 10.00
+                                )
+
+                            [payee] => Array
+                                (
+                                    [email_address] => hkjudo-facilitator@outlook.com
+                                    [merchant_id] => GK3V9UB6S8ZS2
+                                )
+
+                            [description] => Club Membership Fee 2025 (abcjudo)
+                            [custom_id] => club_abcjudo_682d6c810bb7a9.26937549
+                            [soft_descriptor] => PAYPAL *TESTFACILIT
+                            [shipping] => Array
+                                (
+                                    [name] => Array
+                                        (
+                                            [full_name] => asda asdadsada
+                                        )
+
+                                    [address] => Array
+                                        (
+                                            [address_line_1] => asda
+                                            [admin_area_2] => asd
+                                            [admin_area_1] => HONG KONG ISLAND
+                                            [country_code] => HK
+                                        )
+
+                                )
+
+                            [payments] => Array
+                                (
+                                    [captures] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [id] => 2LW61782F9642482U
+                                                    [status] => COMPLETED
+                                                    [amount] => Array
+                                                        (
+                                                            [currency_code] => HKD
+                                                            [value] => 10.00
+                                                        )
+
+                                                    [final_capture] => 1
+                                                    [seller_protection] => Array
+                                                        (
+                                                            [status] => NOT_ELIGIBLE
+                                                        )
+
+                                                    [seller_receivable_breakdown] => Array
+                                                        (
+                                                            [gross_amount] => Array
+                                                                (
+                                                                    [currency_code] => HKD
+                                                                    [value] => 10.00
+                                                                )
+
+                                                            [paypal_fee] => Array
+                                                                (
+                                                                    [currency_code] => HKD
+                                                                    [value] => 2.69
+                                                                )
+
+                                                            [net_amount] => Array
+                                                                (
+                                                                    [currency_code] => HKD
+                                                                    [value] => 7.31
+                                                                )
+
+                                                        )
+
+                                                    [custom_id] => club_abcjudo_682d6c810bb7a9.26937549
+                                                    [links] => Array
+                                                        (
+                                                            [0] => Array
+                                                                (
+                                                                    [href] => https://api.sandbox.paypal.com/v2/payments/captures/2LW61782F9642482U
+                                                                    [rel] => self
+                                                                    [method] => GET
+                                                                )
+
+                                                            [1] => Array
+                                                                (
+                                                                    [href] => https://api.sandbox.paypal.com/v2/payments/captures/2LW61782F9642482U/refund
+                                                                    [rel] => refund
+                                                                    [method] => POST
+                                                                )
+
+                                                            [2] => Array
+                                                                (
+                                                                    [href] => https://api.sandbox.paypal.com/v2/checkout/orders/8J894199MW656953P
+                                                                    [rel] => up
+                                                                    [method] => GET
+                                                                )
+
+                                                        )
+
+                                                    [create_time] => 2025-05-21T06:05:18Z
+                                                    [update_time] => 2025-05-21T06:05:18Z
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+            [links] => Array
+                (
+                    [0] => Array
+                        (
+                            [href] => https://api.sandbox.paypal.com/v2/checkout/orders/8J894199MW656953P
+                            [rel] => self
+                            [method] => GET
+                        )
+
+                )
+
+            [id] => 8J894199MW656953P
+            [payment_source] => Array
+                (
+                    [paypal] => Array
+                        (
+                            [email_address] => 234324234223z@asda.com
+                            [account_id] => TJZ353TG3JBV2
+                            [account_status] => UNVERIFIED
+                            [name] => Array
+                                (
+                                    [given_name] => asda
+                                    [surname] => asdadsada
+                                )
+
+                            [address] => Array
+                                (
+                                    [country_code] => HK
+                                )
+
+                        )
+
+                )
+
+            [intent] => CAPTURE
+            [payer] => Array
+                (
+                    [name] => Array
+                        (
+                            [given_name] => asda
+                            [surname] => asdadsada
+                        )
+
+                    [email_address] => 234324234223z@asda.com
+                    [payer_id] => TJZ353TG3JBV2
+                    [address] => Array
+                        (
+                            [country_code] => HK
+                        )
+
+                )
+
+            [status] => COMPLETED
+        )
+
+    [links] => Array
+        (
+            [0] => Array
+                (
+                    [href] => https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-2X025555WK649521W-6UB55136HR582793C
+                    [rel] => self
+                    [method] => GET
+                )
+
+            [1] => Array
+                (
+                    [href] => https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-2X025555WK649521W-6UB55136HR582793C/resend
+                    [rel] => resend
+                    [method] => POST
+                )
+
+        )
+
+)
+
+2025-05-21T06:39:10+00:00 [DEBUG] PAYMENT.CAPTURE.COMPLETED event detected
+2025-05-21T06:39:10+00:00 [DEBUG] custom_id: ****, payer_email: 234324234223z@asda.com
+2025-05-21T06:39:10+00:00 [DEBUG] No custom_id found, skipping DB update.

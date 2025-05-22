@@ -1,0 +1,93 @@
+﻿<?php
+session_start();
+$title = "主頁 Home";
+include_once($_SERVER['DOCUMENT_ROOT']."/common/header.php");
+?>
+<?
+$query = 'SELECT COUNT(*) FROM participants_'.$_SESSION['category'].' WHERE club = "'.$username.'"';
+$result = mysql_query($query) or die('Error! ' . mysql_error());
+$row = mysql_fetch_array($result);
+
+$clubquery = 'SELECT name, name_chi, type, Ref_id FROM club WHERE username = "'.$username.'"';
+$clubresult = mysql_query($clubquery) or die('Error! ' . mysql_error());
+$clubrow = mysql_fetch_array($clubresult);
+
+
+	// putting the values to be inserted after payment in a temp_ipn database, assigning a random id to the values
+	for ($b = 1; $b < $_SESSION['store']; $b++)
+	{
+		$insert = 'INSERT INTO '.$_SESSION['category'].' VALUES ('.$_SESSION["insert".$b].',"paid")';
+		$ran[$b] = rand(1,999999);
+		$in = 'REPLACE INTO temp_ipn VALUES ('.$ran[$b].',\''.$insert.'\')';
+		$in2 = mysql_query($in) or die('Error! ' . mysql_error());
+	}
+	// passing the random id through the "custom" variable in paypal
+	for ($i = 1; $i < sizeof($ran) + 1;$i++)
+	{
+		$custom = $custom.$ran[$i];
+		if(sizeof($ran) > $i)
+		{
+			$custom = $custom."_";
+		}
+	}
+//echo $custom;
+
+
+?>
+<div class = "row row-block">
+	<h4>
+		<? echo "已註冊會員:".$row['COUNT(*)']; ?><br>
+		<?echo "Current registered participants: ".$row['COUNT(*)'];?><br><br>
+		<?echo "會員號碼 Membership No.: ".$clubrow['Ref_id'];?><br><br>
+		
+	<? echo ' 
+	    <form action="'.$paypal_url.'" method="post">
+		<input type="hidden" name="cmd" value="_cart">
+		<input type="hidden" name="charset" value="utf-8" >
+		<input type="hidden" name="business" value="'.$ac.'">
+		<input type="hidden" name="rm" value="2">
+		<input type="hidden" name="custom" value="'.$custom.'">
+		<input type="hidden" name="return" value="http://www.judoregistration.org/thankyou_payment.php" >
+		<input type="hidden" name="notify_url" value="http://www.judoregistration.org/confirm_payment.php" >
+		<input type="hidden" name="upload" value="1">
+		<input type="hidden" name="item_name_1" value="會費 Membership Fees ['.$clubrow['Ref_id'].'/'.$clubrow['name'].'/'.$clubrow['name_chi'].']">
+		<input type="hidden" name="item_number_1" value="會費 Membership Fees ['.$clubrow['Ref_id'].'/'.$clubrow['name'].'/'.$clubrow['name_chi'].']">'; 
+		
+		if ($clubrow['type']=="renew_observation") {
+		    $fee =500;
+		}else {
+		    $fee=800;
+		}
+		
+		echo ' 
+		<input type="hidden" name="amount_1" value='.$fee.'>
+		<input type="hidden" name="quantity_1" value="1">
+		
+		<input type="hidden" name="currency_code" value="HKD">如果您尚未繳交本年度團體會員會費，請使用以下付款鏈結 Annual Club Membership Fees Payment (If not paid for this year): <br>
+		<input type="image" src="https://www.paypalobjects.com/zh_HK/HK/i/btn/btn_paynowCC_LG.gif" name="submit" alt="Make payments with PayPal - it\'s fast, free and secure!">
+	</form>'; ?>
+		
+		<!--a href=ranking_register.php>登記香港柔道運動員排行榜</a-->
+	</h4>
+</div>
+
+<div class = "row row-block">
+	<h3>可報名比賽 Available Competition</a></h3>
+	<div class = "row">
+		<?
+			$comp = 'SELECT * FROM competition WHERE type = "'.$_SESSION['category'].'"';
+			$comp2 = mysql_query($comp) or die('Error! ' . mysql_error());
+			while ($comp3 = mysql_fetch_array($comp2))
+			{
+				$deadline = floor(strtotime($comp3['deadline'])/(60*60*24) - time()/(60*60*24)) + 1;
+				if ($deadline > -1)
+				{?>
+					<h4><a href='join.php'><? echo $comp3['name'] ?><br><? echo $comp3['name_eng'];?></h4>
+				<?
+				}
+			}
+		?>
+	</div>
+</div>
+	
+<? include_once($_SERVER['DOCUMENT_ROOT']."/common/footer.php"); ?>
