@@ -120,7 +120,7 @@ function deleteParticipant(PDO $pdo, int $id): void
     try {
         $stmt = $pdo->prepare("DELETE FROM " . $_SESSION['category'] . " WHERE id = ?");
         $stmt->execute([$id]);
-        echo "Participant deleted";
+        echo "<div class='alert alert-success'>Participant deleted</div>";
         echo '<meta http-equiv=REFRESH CONTENT=2;>';
     } catch (PDOException $e) {
         error_log("Delete Error: " . $e->getMessage());

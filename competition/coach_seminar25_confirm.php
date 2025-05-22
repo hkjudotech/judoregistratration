@@ -3,7 +3,7 @@ session_start();
 $title = "確認報名";
 include_once($_SERVER['DOCUMENT_ROOT']."/common/header.php");
 
-$DEBUG=true;
+$DEBUG=false;
 
 
 //can be improved by using array and get data from database
