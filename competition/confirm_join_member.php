@@ -28,29 +28,25 @@ try {
 
 	echo '</a></h3><div><p>';
 
-	// Putting values to be inserted after payment in temp_ipn database
-	for ($b = 1; $b < $_SESSION['store']; $b++) {
-		$insert = 'INSERT INTO ' . $_SESSION['category'] . '(competition, code, country, name, name_chi, gender, division, weight, identity, date, payment) VALUES (' . $_SESSION["insert" . $b] . ',"paid")';
+	// Generate unique custom_id for this registration batch using uniqid
+	$custom_id = 'event_' . uniqid();
 
-		$ran[$b] = rand(1, 999999);
-		$stmt = $pdo->prepare('REPLACE INTO temp_ipn VALUES (?, ?)');
-		$stmt->execute([$ran[$b], $insert]);
-	}
+	// Calculate total amount and counts
+	$eventFeeTotal = $_SESSION["fee"] * $_SESSION["pay"];
+	$membershipFeeTotal = $item[1] * $item[2];
+	$totalAmount = $eventFeeTotal + $membershipFeeTotal;
+	$participantCount = $_SESSION["pay"];
+	$membershipFeeCount = $item[2];
 
-	// Create custom ID for tracking
-	$custom =  uniqid('event_' . $name3['name'] . '_', true);
-	
 	if ($DEBUG) {
-		echo $custom;
+		echo "Custom ID: " . $custom_id;
+		echo "Total Amount: " . $totalAmount;
 	}
-
-	// Calculate total amount
-	$totalAmount = ($_SESSION["fee"] * $_SESSION["pay"]) + ($item[1] * $item[2]);
 
 ?>
 
-<!-- Add PayPal SDK -->
-<script src="<?php echo $paypal_webhook_url?>"></script>
+<!-- Add PayPal SDK using constant from header -->
+<script src="<?php echo $paypal_sdk_url; ?>"></script>
 
 <div class="row row-block">
 	<div class="row text-center">
@@ -111,6 +107,7 @@ try {
 
 	<div class="row text-center mt2">
 		<?php if ($_SESSION['ref']) {
+			// Referee registration - no payment required, insert immediately
 			echo '
 			<form method="POST" action="' . $_SERVER['PHP_SELF'] . '" method="post">
 				<input type="submit" name="submit" value="確認 Confirm">
@@ -119,41 +116,116 @@ try {
 				<input type="button" name="return" value="重新填寫 Back" onclick="history.back()">
 			</form>';
 		} else {
+			// Regular player registration
 			echo '
 			一經確認，本會將處理閣下之報名, 取消參加的退款將會被收取行政費每位港幣10元。<br>年齡未滿十八歲者已獲家長或監護人同意<br>
-			Once confirmed and submitted, we will proceed with your application.Any subsequent cancellation will be subjected HKD 10 handling fee per player <br>
+			Once confirmed and submitted, we will proceed with your application. Any subsequent cancellation will be subjected HKD 10 handling fee per player <br>
 			Parent/Guardian has acknowledged and agreed to permit their players who are under the age of 18 to participate in this competition.  
-			<br><br>
+			<br><br>';
 
+			echo '
+			<div class="alert alert-info">
+				<strong>付款須知 Payment Notice:</strong><br>
+				報名必須即時付款才能完成。Registration must be completed with immediate payment.
+			</div>';
+
+			echo '
 			<!-- PayPal Button Container -->
 			<div id="paypal-button-container"></div>
-			<br>
-			
+			<br>';
+
+			/
+			// EMERGENCY: Pay Later Option (uncomment during emergencies only)
+			echo '
 			<form method="POST" action="' . $_SERVER['PHP_SELF'] . '" method="post">
 				<input type="submit" name="submit" value="確認並稍後付款 Confirm and Pay Later">
 			</form>
+			<br>';
 			
+
+			echo '
 			<form>
 				<input type="button" name="return" value="重新填寫 Back" onclick="history.back()">
 			</form>';
 		}
 		echo '</div>';
 
+		// Handle form submissions (only for referees and emergency pay later)
 		if (isset($_POST['submit'])) {
-			for ($b = 1; $b < $_SESSION['store']; $b++) {
-				$confirm = 'INSERT INTO ' . $_SESSION['category'] .
-					'(competition, code, country, name, name_chi, gender, division, weight, identity, date, payment) VALUES (' .
-					$_SESSION["insert" . $b] . ',"")';
-
-				if ($DEBUG) {
-					echo "In confirm_join_member: Submitted" . $confirm;
+			try {
+				// Begin transaction
+				$pdo->beginTransaction();
+				
+				// Determine payment status based on submission type
+				if ($_SESSION['ref']) {
+					// Referee registration - no payment required
+					$payment_status = 'confirmed';
+					$create_payment_record = false;
+				} else {
+					// Emergency pay later option
+					$payment_status = 'pending';
+					$create_payment_record = true;
 				}
-
-				$stmt = $pdo->prepare($confirm);
-				$stmt->execute();
+				
+				// Create event payment record for non-referee registrations
+				if ($create_payment_record && $totalAmount > 0) {
+					$stmt = $pdo->prepare("INSERT INTO event_payment 
+						(custom_id, competition, club_name, club_name_chi, total_amount, currency, participant_count, membership_fee_count, paid, created_at) 
+						VALUES (?, ?, ?, ?, ?, 'HKD', ?, ?, 0, NOW())");
+					
+					$stmt->execute([
+						$custom_id,
+						$_SESSION['competition_eng'] ?? $_SESSION['item_name'],
+						$name3['name'],
+						$name3['name_chi'],
+						$totalAmount,
+						$participantCount,
+						$membershipFeeCount
+					]);
+					
+					if ($DEBUG) {
+						echo "Created event payment record with custom_id: " . $custom_id . "<br>";
+					}
+				}
+				
+				// Insert all registrations
+				for ($b = 1; $b < $_SESSION['store']; $b++) {
+					// Parse the insert statement to get individual values
+					$insertData = $_SESSION["insert" . $b];
+					
+					// Create the insert statement for the category table
+					$stmt = $pdo->prepare("INSERT INTO " . $_SESSION['category'] . 
+						" (competition, code, country, name, name_chi, gender, division, weight, identity, date, payment, custom_id, created_at) 
+						VALUES (" . $insertData . ", ?, ?, NOW())");
+					
+					$stmt->execute([$payment_status, $custom_id]);
+					
+					if ($DEBUG) {
+						echo "Inserted registration " . $b . " with custom_id: " . $custom_id . " and status: " . $payment_status . "<br>";
+					}
+				}
+				
+				// Commit transaction
+				$pdo->commit();
+				
+				if ($DEBUG) {
+					echo "All registrations inserted successfully with custom_id: " . $custom_id;
+				}
+				
+				echo '<meta http-equiv=REFRESH CONTENT=1;url=/front.php>';
+				
+			} catch (PDOException $e) {
+				// Rollback transaction on error
+				$pdo->rollBack();
+				
+				if ($DEBUG) {
+					die('Error inserting registrations: ' . $e->getMessage());
+				} else {
+					die('Registration error occurred. Please try again later.');
+				}
 			}
-			echo '<meta http-equiv=REFRESH CONTENT=1;url=/front.php>';
 		}
+		
 	} catch (PDOException $e) {
 		if ($DEBUG) {
 			die('Error: ' . $e->getMessage());
@@ -172,18 +244,18 @@ paypal.Buttons({
                     value: '<?php echo number_format($totalAmount, 2, '.', ''); ?>',
                     currency_code: 'HKD'
                 },
-                custom_id: '<?php echo $custom; ?>',
+                custom_id: '<?php echo $custom_id; ?>',
                 description: '<?php echo $_SESSION["item_name"] . "/" . $name3['name'] . "/" . $name3['name_chi']; ?>'
             }]
         });
     },
     onApprove: function(data, actions) {
         return actions.order.capture().then(function(details) {
-            // Show success message
-            alert('Payment completed successfully!');
+            // Payment successful - webhook will handle the database updates
+            alert('Payment completed successfully! Your registration will be processed shortly.');
             
             // Redirect to success page
-            window.location.href = '/thankyou_payment.php?orderID=' + data.orderID;
+            window.location.href = '/thankyou_payment.php?orderID=' + data.orderID + '&custom_id=<?php echo $custom_id; ?>';
         });
     },
     onError: function(err) {
@@ -191,7 +263,7 @@ paypal.Buttons({
         alert('An error occurred during payment. Please try again.');
     },
     onCancel: function(data) {
-        alert('Payment was cancelled.');
+        alert('Payment was cancelled. Registration cannot be completed without payment.');
     }
 }).render('#paypal-button-container');
 </script>

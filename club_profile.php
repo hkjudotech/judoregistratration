@@ -179,7 +179,7 @@ try {
             </div>
             <!-- PayPal Button -->
             <div id="paypal-button-container"></div>
-            <script src="<?php echo $paypal_webhook_url ?>"></script>
+            <script src="<?php echo $paypal_sdk_url ?>"></script>
             <script>
             paypal.Buttons({
                 style: {
