@@ -84,7 +84,7 @@ try {
         <h3>會籍資料 Club Profile</h3>
         <form method="post">
             <!-- ...existing form fields... -->
-            <div class="form-group">
+      	<div class = "col-xs-10 col-xs-offset-1 col-md-5">
                 <label>英文名稱 Name:</label>
                 <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($club['name']); ?>" required readonly>
             </div>
