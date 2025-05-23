@@ -47,7 +47,9 @@ $ac = USE_SANDBOX ?
     "hkjudo@outlook.com";
     
 $paypal_webhook_url =USE_SANDBOX ? 
+// dev
 "https://www.paypal.com/sdk/js?client-id=AZOC0Tnzo3yem_jX242e2FzbSJjUN0ySzEJSQrM059YR7N__hejuliQoUIKRNIx2nx_DbS317zjwgkgd&currency=HKD":
+//prod
 "https://www.paypal.com/sdk/js?client-id=AcLO1rltASKEV9sZLdOgfjD80UTfuIJ-M0XclDTx8g8U928ZWfYaAQ9_asQ2JQnn5jaLVtj_TUAAMa9T&currency=HKD";
 
 
