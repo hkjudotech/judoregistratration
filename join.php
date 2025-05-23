@@ -150,7 +150,9 @@ while ($comp3 = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 				<?php
 
-				if(($comp3['official'] == "Y") AND ($deadline > -1))
+				if(($comp3['official'] == "Y") AND ($deadline > -1) AND 
+   (strpos($comp3['short'], 'coach') === false) AND 
+   (strpos($comp3['short'], 'ref') === false))
 
 				{
 
