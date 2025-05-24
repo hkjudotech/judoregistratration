@@ -39,13 +39,13 @@ try {
 	$membershipFeeCount = $item[2];
 
 	if ($DEBUG) {
-		echo "Custom ID: " . $custom_id;
-		echo "Total Amount: " . $totalAmount;
+		echo "Custom ID: " . $custom_id . "<br>";
+		echo "Total Amount: " . $totalAmount . "<br>";
 	}
 
 ?>
 
-<!-- Add PayPal SDK using constant from header -->
+<!-- Add PayPal SDK using variable from header -->
 <script src="<?php echo $paypal_sdk_url; ?>"></script>
 
 <div class="row row-block">
@@ -134,14 +134,14 @@ try {
 			<div id="paypal-button-container"></div>
 			<br>';
 
-			/
+			/* 
 			// EMERGENCY: Pay Later Option (uncomment during emergencies only)
 			echo '
 			<form method="POST" action="' . $_SERVER['PHP_SELF'] . '" method="post">
 				<input type="submit" name="submit" value="確認並稍後付款 Confirm and Pay Later">
 			</form>
 			<br>';
-			
+			*/
 
 			echo '
 			<form>
@@ -156,60 +156,35 @@ try {
 				// Begin transaction
 				$pdo->beginTransaction();
 				
-				// Determine payment status based on submission type
-				if ($_SESSION['ref']) {
-					// Referee registration - no payment required
-					$payment_status = 'confirmed';
-					$create_payment_record = false;
-				} else {
-					// Emergency pay later option
-					$payment_status = 'pending';
-					$create_payment_record = true;
-				}
-				
-				// Create event payment record for non-referee registrations
-				if ($create_payment_record && $totalAmount > 0) {
-					$stmt = $pdo->prepare("INSERT INTO event_payment 
-						(custom_id, competition, club_name, club_name_chi, total_amount, currency, participant_count, membership_fee_count, paid, created_at) 
-						VALUES (?, ?, ?, ?, ?, 'HKD', ?, ?, 0, NOW())");
-					
-					$stmt->execute([
-						$custom_id,
-						$_SESSION['competition_eng'] ?? $_SESSION['item_name'],
-						$name3['name'],
-						$name3['name_chi'],
-						$totalAmount,
-						$participantCount,
-						$membershipFeeCount
-					]);
-					
-					if ($DEBUG) {
-						echo "Created event payment record with custom_id: " . $custom_id . "<br>";
-					}
-				}
-				
-				// Insert all registrations
+				// Insert all registrations directly to the local table
 				for ($b = 1; $b < $_SESSION['store']; $b++) {
-					// Parse the insert statement to get individual values
-					$insertData = $_SESSION["insert" . $b];
+					$confirm = 'INSERT INTO local ' . 
+						'(competition, code, country, name, name_chi, gender, division, weight, identity, date, payment, custom_id) VALUES (' . 
+						$_SESSION["insert" . $b] . ', ?, ?)';
 					
-					// Create the insert statement for the category table
-					$stmt = $pdo->prepare("INSERT INTO " . $_SESSION['category'] . 
-						" (competition, code, country, name, name_chi, gender, division, weight, identity, date, payment, custom_id, created_at) 
-						VALUES (" . $insertData . ", ?, ?, NOW())");
-					
-					$stmt->execute([$payment_status, $custom_id]);
+					if ($_SESSION['ref']) {
+						// Referee registration - no payment required
+						$payment_status = 'confirmed';
+						$registration_custom_id = null; // No custom_id needed for referees
+					} else {
+						// Emergency pay later option
+						$payment_status = 'pending';
+						$registration_custom_id = $custom_id;
+					}
 					
 					if ($DEBUG) {
-						echo "Inserted registration " . $b . " with custom_id: " . $custom_id . " and status: " . $payment_status . "<br>";
+						echo "Executing: " . $confirm . " with payment: " . $payment_status . " and custom_id: " . $registration_custom_id . "<br>";
 					}
+					
+					$stmt = $pdo->prepare($confirm);
+					$stmt->execute([$payment_status, $registration_custom_id]);
 				}
 				
 				// Commit transaction
 				$pdo->commit();
 				
 				if ($DEBUG) {
-					echo "All registrations inserted successfully with custom_id: " . $custom_id;
+					echo "All registrations inserted successfully";
 				}
 				
 				echo '<meta http-equiv=REFRESH CONTENT=1;url=/front.php>';
