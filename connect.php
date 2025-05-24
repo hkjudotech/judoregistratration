@@ -4,7 +4,7 @@ session_start();
 try {
     // Connect to database using PDO
     $pdo = new PDO(
-        'mysql:host=localhost;dbname=judonorg_judo;charset=utf8',
+        'mysql:host=localhost;dbname=judonorg_judo;charset=utf8mb4',
         'judonorg_reg',
         '1024judo',
         array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)

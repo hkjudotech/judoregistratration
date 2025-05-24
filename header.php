@@ -17,7 +17,7 @@ if (!$conn) {
 }
 
 // Set character encoding
-mysqli_set_charset($conn, 'utf8');
+mysqli_set_charset($conn, 'utf8mb4');
 // Or alternatively:
 /*
 mysqli_query($conn, "SET NAMES 'UTF8'");
@@ -130,7 +130,7 @@ $_SESSION['dashboard'] = "admin/dashboard.php";
 
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" charset="utf8mb4" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
 
 	<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
 
