@@ -47,7 +47,7 @@ try {
     $membershipFeeCount = $item[2]; // Total number of non-members
 
     // Store membership fee total in session for thankyou page
-    $_SESSION['total_membership_fee'] =$membershipFeeTotal;// count * fee per person
+    $_SESSION['total_membership_fee'] =$membershipFeeTotal; // count * fee per person
     $_SESSION['membership_fee_count'] = $item[2]; // just the count
 
     if ($DEBUG) {
@@ -102,7 +102,7 @@ try {
 ?>
 
     <!-- Add PayPal SDK using variable from header -->
-    <script src="<?php echo $paypal_sdk_url; ?>"></script>
+    <script src="<?php echo $PAYPAL_SDK_URL; ?>"></script>
 
     <div class="row row-block">
         <div class="row text-center">

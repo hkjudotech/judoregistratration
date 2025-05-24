@@ -103,7 +103,7 @@ if ($orderID) {
     }
 
     // Optionally clear sensitive session data
-    unset($_SESSION['fee'], $_SESSION['pay'], $_SESSION['store'],$_SESSION['total_membership_fee'], $_SESSION['membership_fee_count']);
+    unset($_SESSION['fee'], $_SESSION['pay'], $_SESSION['store'], $_SESSION['total_membership_fee'], $_SESSION['membership_fee_count']);
 }
 
 include_once($_SERVER['DOCUMENT_ROOT'] . "/common/footer.php");

@@ -12,7 +12,7 @@ $dbuser = "judonorg_reg";
 $dbpass = "1024judo";
 
 // PayPal Configuration
-$PAYPAL_ENVIRONMENT = "sandbox"; // Change to "sandbox" for testing
+$PAYPAL_ENVIRONMENT = "production"; // Change to "sandbox" for testing
 $PAYPAL_CONFIG = [
     'production' => [
         'webhook_id' => '35V21119MK746351H',

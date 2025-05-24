@@ -5,12 +5,13 @@ require_once($_SERVER['DOCUMENT_ROOT']."/common/PhpMailer/Exception.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/common/PhpMailer/PHPMailer.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/common/PhpMailer/SMTP.php");
 
+require_once($_SERVER['DOCUMENT_ROOT']. '/config.php');
 
 try {
-    $dbhost = "localhost";
-    $dbname = "judonorg_judo";
-    $dbuser = "judonorg_reg";
-    $dbpass = "1024judo";
+   // $dbhost = "localhost";
+//    $dbname = "judonorg_judo";
+  //  $dbuser = "judonorg_reg";
+//    $dbpass = "1024judo";
     
     $pdo = new PDO(
         "mysql:host=$dbhost;dbname=$dbname;charset=utf8mb4",
@@ -35,6 +36,7 @@ if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
+/*
 // PayPal configuration
 define("USE_SANDBOX", 1);
 $paypal_url = USE_SANDBOX ? 
@@ -51,7 +53,7 @@ $paypal_sdk_url =USE_SANDBOX ?
 "https://www.paypal.com/sdk/js?client-id=AZOC0Tnzo3yem_jX242e2FzbSJjUN0ySzEJSQrM059YR7N__hejuliQoUIKRNIx2nx_DbS317zjwgkgd&currency=HKD":
 //prod
 "https://www.paypal.com/sdk/js?client-id=AcLO1rltASKEV9sZLdOgfjD80UTfuIJ-M0XclDTx8g8U928ZWfYaAQ9_asQ2JQnn5jaLVtj_TUAAMa9T&currency=HKD";
-
+*/
 
 // Get club information
 //$stmt = $conn->prepare("SELECT id, name, name_chi, code FROM club WHERE username = ?");
@@ -59,7 +61,7 @@ $paypal_sdk_url =USE_SANDBOX ?
 //$stmt->execute();
 
 // Get club information
-$stmt = $pdo->prepare("SELECT id, name, name_chi, code FROM club WHERE username = ?");
+$stmt = $pdo->prepare("SELECT id, name, name_chi, code, Ref_id FROM club WHERE username = ?");
 $stmt->execute([$username]);
 $name3 =$stmt->fetch();
 
@@ -185,7 +187,7 @@ $_SESSION['dashboard'] = "admin/dashboard.php";
             <ul class="nav navbar-nav">
 
 				<li><a href="/front.php">主頁<br>Home</a></li>
-
+				
 				<li><a href="/club_profile.php">會籍資料<br>Club Details</a></li>
 
 				<li><a href="/add.php">註冊參加者<br>Participants Registration</a></li>
@@ -227,8 +229,6 @@ if ($_SESSION['admin'])
 
 		<div class = "row row-block">
 
-			<h3><?php echo $name3['name_chi']; ?> <?php echo $name3['name'];?></h3>
+			<h3><?php echo $name3['name_chi']; ?> <?php echo $name3['name'];?> [ <?php echo $name3['Ref_id'];?> ] </h3>
 
 		</div>
-
-

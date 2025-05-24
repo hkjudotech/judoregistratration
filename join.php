@@ -134,7 +134,7 @@ while ($comp3 = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 				{
 
-					echo "<a color = '#AAAAAA' href=competition/".$comp3['short'].".php><font color = '#FF0000'>Register</font></a>";
+					echo "<a color = '#AAAAAA' href=competition/".$comp3['short'].".php ><font color = '#FF0000'>Register</font></a>";
 
 				}else{
 

@@ -1,9 +1,10 @@
 <?php
 session_start();
 $title = '2025年香港柔道公開賽';
-$DEBUG=false;
 
 include_once($_SERVER['DOCUMENT_ROOT']."/common/header.php");
+
+$DEBUG=false;
 
 try{
 //Number of Columns
@@ -36,7 +37,7 @@ echo '</a></h3><div class = "row row-block"><p>';
   //Select data from participants
     $stmt = $pdo->prepare('SELECT id, name, name_chi, birthday, gender, active_member 
                           FROM participants_local 
-                          WHERE club = ? 
+                          WHERE club = ? AND category= "Athlete"
                           ORDER BY name');
     $stmt->execute([$username]);
     

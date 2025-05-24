@@ -50,6 +50,14 @@ session_start();
 <br>
 <a href="competition/independent.php">Competition Registration for Associated Members | 獨立會員比賽報名</div>
 -->
+
+<!--div align="center"><p>
+<br>
+<h3>由於 PayPal付款功能仍在搶修中，比賽報名功能目前暫停使用。不便之處，敬請見諒。請您於數日後再嘗試報名，感謝您的耐心與支持
+<p><br>
+Due to ongoing repairs to the PayPal payment feature, the competition registration function is currently suspended. <br>We apologize for any inconvenience caused. Please try registering again in a few days. Thank you for your patience and support.
+</h3>
+</div-->
 </body>
 </html>
 

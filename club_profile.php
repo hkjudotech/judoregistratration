@@ -179,7 +179,7 @@ try {
             </div>
             <!-- PayPal Button -->
             <div id="paypal-button-container"></div>
-            <script src="<?php echo $paypal_sdk_url ?>"></script>
+            <script src="<?php echo $PAYPAL_SDK_URL  ?>"></script>
             <script>
             paypal.Buttons({
                 style: {
