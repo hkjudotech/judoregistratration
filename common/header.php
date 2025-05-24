@@ -186,6 +186,8 @@ $_SESSION['dashboard'] = "admin/dashboard.php";
 
 				<li><a href="/front.php">主頁<br>Home</a></li>
 
+				<li><a href="/club_profile.php">會籍資料<br>Club Details</a></li>
+
 				<li><a href="/add.php">註冊參加者<br>Participants Registration</a></li>
 
 				<li><a href="/join.php">比賽報名<br>Entries</a></li>

@@ -116,7 +116,7 @@ if ($DEBUG) {
 					<label for="hkid">身份證編號/非香港居民(國藉)証件編號 HKID No/Passport No for Non HK Citizen(首4個數字 First 4th digits)*</label>
 				</div>
 				<div class="col-xs-10 col-xs-offset-1 col-md-5 col-md-offset-0">
-					<input class="form-control" name="hkid" type="text" value="<?php echo isset($_POST['hkid']) ? htmlspecialchars($_POST['hkid']) : ''; ?>" required>
+					<input class="form-control" name="hkid" type="text" maxlength="5" value="<?php echo isset($_POST['hkid']) ? htmlspecialchars($_POST['hkid']) : ''; ?>" required>
 				</div>
 			</div>
 			<div class="row">
@@ -124,7 +124,7 @@ if ($DEBUG) {
 					<label for="email">電郵地址 Email*</label>
 				</div>
 				<div class="col-xs-10 col-xs-offset-1 col-md-5 col-md-offset-0">
-					<input class="form-control" type="email" name="email" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
+					<input class="form-control" type="email" name="email" maxlength=100" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
 				</div>
 			</div>
 			<div class="row">
@@ -132,7 +132,7 @@ if ($DEBUG) {
 					<label for="ph">聯絡電話 Phone*</label>
 				</div>
 				<div class="col-xs-10 col-xs-offset-1 col-md-5 col-md-offset-0">
-					<input class="form-control" type="tel" name="phone" value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>" required>
+					<input class="form-control" type="tel" name="phone" maxlength="20" value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>" required>
 				</div>
 			</div>
 			<div class="row">

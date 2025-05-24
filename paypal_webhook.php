@@ -3,11 +3,28 @@
 // TODO: Implement additional webhook event types and improve error handling
 // TODO: Refactor the code to store the database details in a separate config file
 
+$config = include(__DIR__ . '/config.php');
+
+
 $DEBUG = true; // Set to false to turn off debugging
+// PayPal Production Configuration
+$PAYPAL_WEBHOOK_ID = "YOUR_PRODUCTION_WEBHOOK_ID_HERE"; // Replace with your actual webhook ID
+$PAYPAL_CLIENT_ID = "YOUR_PRODUCTION_CLIENT_ID_HERE";
+$PAYPAL_CLIENT_SECRET = "YOUR_PRODUCTION_CLIENT_SECRET_HERE";
+$PAYPAL_BASE_URL = "https://api-m.paypal.com"; // Production URL
 
 // Read the raw POST body from PayPal
 $body = file_get_contents('php://input');
 $event = json_decode($body, true);
+
+// Get headers for verification
+$headers = getallheaders();
+$auth_algo = $headers['PAYPAL-AUTH-ALGO'] ?? '';
+$transmission_id = $headers['PAYPAL-TRANSMISSION-ID'] ?? '';
+$cert_id = $headers['PAYPAL-CERT-ID'] ?? '';
+$transmission_sig = $headers['PAYPAL-TRANSMISSION-SIG'] ?? '';
+$transmission_time = $headers['PAYPAL-TRANSMISSION-TIME'] ?? '';
+
 
 $dbhost = "localhost";
 $dbname = "judonorg_judo";
@@ -18,8 +35,94 @@ $dbpass = "1024judo";
 if ($DEBUG) {
     file_put_contents(__DIR__ . '/paypal_webhook.log', date('c') . " [DEBUG] Raw body: " . $body . PHP_EOL, FILE_APPEND);
     file_put_contents(__DIR__ . '/paypal_webhook.log', date('c') . " [DEBUG] Decoded event: " . print_r($event, true) . PHP_EOL, FILE_APPEND);
+    file_put_contents(__DIR__ . '/paypal_webhook.log', date('c') . " [DEBUG] Headers: " . print_r($headers, true) . PHP_EOL, FILE_APPEND);
 }
 
+// Function to get PayPal access token
+function getPayPalAccessToken($client_id, $client_secret, $base_url) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $base_url . '/v1/oauth2/token');
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERPWD, $client_id . ":" . $client_secret);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Accept-Language: en_US'));
+
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($http_code !== 200) {
+        return false;
+    }
+
+    $json = json_decode($result, true);
+    return $json['access_token'] ?? false;
+}
+
+// Function to verify webhook signature
+function verifyWebhookSignature($webhook_id, $access_token, $base_url, $headers, $body) {
+    $verification_data = array(
+        'auth_algo' => $headers['PAYPAL-AUTH-ALGO'] ?? '',
+        'cert_id' => $headers['PAYPAL-CERT-ID'] ?? '',
+        'transmission_id' => $headers['PAYPAL-TRANSMISSION-ID'] ?? '',
+        'transmission_sig' => $headers['PAYPAL-TRANSMISSION-SIG'] ?? '',
+        'transmission_time' => $headers['PAYPAL-TRANSMISSION-TIME'] ?? '',
+        'webhook_id' => $webhook_id,
+        'webhook_event' => json_decode($body, true)
+    );
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $base_url . '/v1/notifications/verify-webhook-signature');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $access_token
+    ));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($verification_data));
+
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($http_code !== 200) {
+        return false;
+    }
+
+    $response = json_decode($result, true);
+    return ($response['verification_status'] ?? '') === 'SUCCESS';
+}
+
+// Verify webhook authenticity for production
+if (!$DEBUG) { // Only verify in production
+    // Get access token
+    $access_token = getPayPalAccessToken($PAYPAL_CLIENT_ID, $PAYPAL_CLIENT_SECRET, $PAYPAL_BASE_URL);
+    
+    if (!$access_token) {
+        file_put_contents(__DIR__ . '/paypal_webhook.log', date('c') . " [ERROR] Failed to get PayPal access token" . PHP_EOL, FILE_APPEND);
+        http_response_code(401);
+        echo "Authentication failed";
+        exit;
+    }
+
+    // Verify webhook signature
+    if (!verifyWebhookSignature($PAYPAL_WEBHOOK_ID, $access_token, $PAYPAL_BASE_URL, $headers, $body)) {
+        file_put_contents(__DIR__ . '/paypal_webhook.log', date('c') . " [ERROR] Webhook signature verification failed" . PHP_EOL, FILE_APPEND);
+        http_response_code(401);
+        echo "Verification failed";
+        exit;
+    }
+
+    if ($DEBUG) {
+        file_put_contents(__DIR__ . '/paypal_webhook.log', date('c') . " [DEBUG] Webhook signature verified successfully" . PHP_EOL, FILE_APPEND);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Only process payment completed events 'CHECKOUT.ORDER.APPROVED'
 if (isset($event['event_type']) && $event['event_type'] === 'CHECKOUT.ORDER.APPROVED') {
     if ($DEBUG) {
