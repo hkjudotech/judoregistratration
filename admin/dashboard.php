@@ -201,7 +201,8 @@ if ($debug=="Y")  {
 	<h4><a href='new_club.php' class="list-group-item list-group-item-action " >新申請觀察會員</a></h4>
 	<h4><a href='school_listing.php' class="list-group-item list-group-item-action " >學校一覽 School Listing </a></h4>
 	<h4><a href='club_listing.php' class="list-group-item list-group-item-action " >會籍一覽 Club Listing</a></h4>
-	<h4><a href='payment_listing.php' class="list-group-item list-group-item-action " >網上付款一覽</a></h4>
+	<h4><a href='event_payment_listing.php' class="list-group-item list-group-item-action " >活動網上付款一覽</a></h4>
+	<h4><a href='club_payment_listing.php' class="list-group-item list-group-item-action " >會籍付款一覽</a></h4>
 	<!--h4><a href='ranking_listing.php' class="list-group-item list-group-item-action">已參加排名運動員 Ranked Athletes </a></h4-->
 	<h4><a href='member_listing.php?role=Referee' class="list-group-item list-group-item-action">裁判 Referees</a></h4>
 	<h4><a href='member_listing.php?role=Coach' class="list-group-item list-group-item-action"> 教練 Coaches</a></h4>
